@@ -10,7 +10,8 @@ if (nodeMajor < 4) {
 	}
 }
 var prompt = require('prompt');
-console.info('Welcome to Misterbit Simple REST Server!');
+console.info('Welcome to Simple REST Server!');
+console.info('FINAL-SPRINT by Saar Sabin, Guy Lilian and Shahar Haramati C.');
 console.info('Notice: Only Mongo based server also has websocket support');
 var schema = {
 	properties: {
