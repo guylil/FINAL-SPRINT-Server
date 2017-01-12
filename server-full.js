@@ -55,7 +55,8 @@ function dbConnect() {
 
 	return new Promise((resolve, reject) => {
 		// Connection URL
-		var url = 'mongodb://localhost:27017/food_trucker';
+		const dbName = 'test' 
+		var url = `mongodb://localhost:27017/${dbName}`;
 		// Use connect method to connect to the Server
 		mongodb.MongoClient.connect(url, function (err, db) {
 			if (err) {
@@ -132,7 +133,7 @@ app.delete('/data/:objType/:id', function (req, res) {
 				res.json(500, {error: 'Delete failed'})
 			} else {
 				cl("Deleted", result);
-				res.json({});
+				res.json({"Deleted Status":"Succesful"}); // Should be empty?
 			}
 			db.close();
 		});
