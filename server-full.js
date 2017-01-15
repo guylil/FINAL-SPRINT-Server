@@ -55,7 +55,7 @@ function dbConnect() {
 
 	return new Promise((resolve, reject) => {
 		// Connection URL
-		const dbName = 'test' 
+		const dbName = 'foodtrack' 
 		var url = `mongodb://localhost:27017/${dbName}`;
 		// Use connect method to connect to the Server
 		mongodb.MongoClient.connect(url, function (err, db) {
@@ -198,10 +198,29 @@ app.put('/data/:objType/:id',  function (req, res) {
 	});
 });
 
+app.post('/usermeals',function(req, res){
+	const id = new mongodb.ObjectID(req.body.userId);
+	dbConnect().then( (db) => {
+		db.collection('meal').find({userId : new mongodb.ObjectID(id)}).toArray(function(err , meals){
+			if(meals){
+				meals = meals.filter(meal => {
+					if(meal.time >= req.body.from && meal.time <= req.body.to) return meal;
+				})
+				cl('Found meals for user');
+				res.json({meals});
+			} else{
+				cl('No meals found for user');
+				res.json(403, { error: 'Meals were not found' })
+			}
+			db.close();
+		})
+	});
+})
+
 // Basic Login/Logout/Protected assets
 app.post('/login', function (req, res) {
 	dbConnect().then((db) => {
-		db.collection('user').findOne({username: req.body.username, password: req.body.password}, function (err, user) {
+		db.collection('user').findOne({email: req.body.email, password: req.body.password}, function (err, user) {
 			if (user) {
 				cl('Login Succesful');
                 delete user.password;
