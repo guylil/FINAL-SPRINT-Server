@@ -10,13 +10,13 @@ function insertDocuments(db, callback) {
     { foods: 'string',  time: Date.now()+Math.random()*1000 ,  userId: 3 },
     { foods: 'string',  time: Date.now()+Math.random()*1000 ,  userId: 4 },
     { foods: 'string',  time: Date.now()+Math.random()*1000 ,  userId: 5 },
-    ])
+    ]);
     db.collection('feeling').insertMany([
         {rating:1,time: Date.now()+Math.random()*1000,userId:1},
         {rating:3,time: Date.now()+Math.random()*1000,userId:2},
         {rating:5,time: Date.now()+Math.random()*1000,userId:3}
     ]);
-    db.collection('userId').insertMany([
+    db.collection('user').insertMany([
         {eamil:'aa@gmail.com',password: 123465, imageUrl:'www',settings:{pushTImer:1000,lnag:'en'}},
         {eamil:'aabb@gmail.com',password: 123465, imageUrl:'www',settings:{pushTImer:1000,lnag:'en'}},
         {eamil:'aacc@gmail.com',password: 123465, imageUrl:'www',settings:{pushTImer:1000,lnag:'en'}}
