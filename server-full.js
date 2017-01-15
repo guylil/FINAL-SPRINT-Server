@@ -24,13 +24,13 @@ var storage = multer.diskStorage({
 		cb(null, file.fieldname + '-' + Date.now() + ext)
 	}
 })
-var upload = multer({storage: storage})
+var upload = multer({ storage: storage })
 
 const app = express();
 
 var corsOptions = {
-  origin: /http:\/\/localhost:\d+/,
-  credentials: true
+	origin: /http:\/\/localhost:\d+/,
+	credentials: true
 };
 
 const serverRoot = 'http://localhost:3003/';
@@ -55,7 +55,7 @@ function dbConnect() {
 
 	return new Promise((resolve, reject) => {
 		// Connection URL
-		const dbName = 'test' 
+		const dbName = 'test'
 		var url = `mongodb://localhost:27017/${dbName}`;
 		// Use connect method to connect to the Server
 		mongodb.MongoClient.connect(url, function (err, db) {
@@ -80,7 +80,7 @@ app.get('/data/:objType', function (req, res) {
 		collection.find({}).toArray((err, objs) => {
 			if (err) {
 				cl('Cannot get you a list of ', err)
-				res.json(404, {error: 'not found'})
+				res.json(404, { error: 'not found' })
 			} else {
 				cl("Returning list of " + objs.length + " " + objType + "s");
 				res.json(objs);
@@ -100,23 +100,23 @@ app.get('/data/:objType/:id', function (req, res) {
 			const collection = db.collection(objType);
 			//let _id;
 			//try {
-			let	_id = new mongodb.ObjectID(objId);
+			let _id = new mongodb.ObjectID(objId);
 			//}
 			//catch (e) {
 			//	console.log('ERROR', e);
 			//	return Promise.reject(e);
 			//}
 
-			collection.find({_id: _id}).toArray((err, objs) => {
-						if (err) {
-							cl('Cannot get you that ', err)
-							res.json(404, {error: 'not found'})
-						} else {
-							cl("Returning a single " + objType);
-							res.json(objs[0]);
-						}
-						db.close();
-					});
+			collection.find({ _id: _id }).toArray((err, objs) => {
+				if (err) {
+					cl('Cannot get you that ', err)
+					res.json(404, { error: 'not found' })
+				} else {
+					cl("Returning a single " + objType);
+					res.json(objs[0]);
+				}
+				db.close();
+			});
 		});
 });
 
@@ -127,13 +127,13 @@ app.delete('/data/:objType/:id', function (req, res) {
 	cl(`Requested to DELETE the ${objType} with id: ${objId}`);
 	dbConnect().then((db) => {
 		const collection = db.collection(objType);
-		collection.deleteOne({_id: new mongodb.ObjectID(objId)}, (err, result) => {
+		collection.deleteOne({ _id: new mongodb.ObjectID(objId) }, (err, result) => {
 			if (err) {
 				cl('Cannot Delete', err)
-				res.json(500, {error: 'Delete failed'})
+				res.json(500, { error: 'Delete failed' })
 			} else {
 				cl("Deleted", result);
-				res.json({"Deleted Status":"Succesful"}); // Should be empty?
+				res.json({ "Deleted Status": "Succesful" }); // Should be empty?
 			}
 			db.close();
 		});
@@ -164,7 +164,7 @@ app.post('/data/:objType', upload.single('file'), function (req, res) {
 		collection.insert(obj, (err, result) => {
 			if (err) {
 				cl(`Couldnt insert a new ${objType}`, err)
-				res.json(500, {error: 'Failed to add'})
+				res.json(500, { error: 'Failed to add' })
 			} else {
 				cl(objType + " added");
 				res.json(obj);
@@ -176,37 +176,37 @@ app.post('/data/:objType', upload.single('file'), function (req, res) {
 });
 
 // PUT - updates
-app.put('/data/:objType/:id',  function (req, res) {
-	const objType 	= req.params.objType;
-	const objId 	= req.params.id;
-	const newObj 	= req.body;
-    if (newObj._id && typeof newObj._id === 'string') newObj._id = new mongodb.ObjectID(newObj._id);
+app.put('/data/:objType/:id', function (req, res) {
+	const objType = req.params.objType;
+	const objId = req.params.id;
+	const newObj = req.body;
+	if (newObj._id && typeof newObj._id === 'string') newObj._id = new mongodb.ObjectID(newObj._id);
 
-    cl(`Requested to UPDATE the ${objType} with id: ${objId}`);
+	cl(`Requested to UPDATE the ${objType} with id: ${objId}`);
 	dbConnect().then((db) => {
 		const collection = db.collection(objType);
-		collection.updateOne({ _id:  new mongodb.ObjectID(objId)}, newObj,
-		 (err, result) => {
-			if (err) {
-				cl('Cannot Update', err)
-				res.json(500, { error: 'Update failed' })
-			} else {
-				res.json(newObj);
-			}
-			db.close();
-		});
+		collection.updateOne({ _id: new mongodb.ObjectID(objId) }, newObj,
+			(err, result) => {
+				if (err) {
+					cl('Cannot Update', err)
+					res.json(500, { error: 'Update failed' })
+				} else {
+					res.json(newObj);
+				}
+				db.close();
+			});
 	});
 });
 
 // Basic Login/Logout/Protected assets
 app.post('/login', function (req, res) {
 	dbConnect().then((db) => {
-		db.collection('user').findOne({username: req.body.username, password: req.body.password}, function (err, user) {
+		db.collection('user').findOne({ username: req.body.username, password: req.body.password }, function (err, user) {
 			if (user) {
 				cl('Login Succesful');
-                delete user.password;
+				delete user.password;
 				req.session.user = user;  //refresh the session value
-				res.json({token: 'Beareloginr: puk115th@b@5t', user});
+				res.json({ token: 'Beareloginr: puk115th@b@5t', user });
 			} else {
 				cl('Login NOT Succesful');
 				req.session.user = null;
@@ -224,7 +224,7 @@ app.get('/logout', function (req, res) {
 function requireLogin(req, res, next) {
 	if (!req.session.user) {
 		cl('Login Required');
-		res.json(403, {error: 'Please Login'})
+		res.json(403, { error: 'Please Login' })
 	} else {
 		next();
 	}
@@ -267,6 +267,8 @@ function cl(...params) {
 }
 
 // Just for basic testing the socket
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/test-socket.html');
+app.get('/', function (req, res) {
+	res.sendFile(__dirname + '/test-socket.html');
 });
+
+require('./dummyData');
