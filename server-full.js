@@ -160,7 +160,9 @@ app.post('/data/:objType', upload.single('file'), function (req, res) {
 
 	dbConnect().then((db) => {
 		const collection = db.collection(objType);
-
+		if(objType === 'meal'){
+			obj.userId = new mongodb.ObjectID(obj.userId);
+		}
 		collection.insert(obj, (err, result) => {
 			if (err) {
 				cl(`Couldnt insert a new ${objType}`, err)
@@ -198,10 +200,30 @@ app.put('/data/:objType/:id', function (req, res) {
 	});
 });
 
+app.post('/usermeals',function(req, res){
+	const id = new mongodb.ObjectID(req.body.userId);
+	dbConnect().then( (db) => {
+		db.collection('meal').find({userId : id}).toArray(function(err , meals){
+			if(meals){
+				meals = meals.filter(meal => {
+					if(meal.time >= req.body.from && meal.time <= req.body.to) return meal;
+				})
+				cl('Found meals for user');
+				cl(meals)
+				res.json({meals});
+			} else{
+				cl('No meals found for user');
+				res.json(403, { error: 'Meals were not found' })
+			}
+			db.close();
+		})
+	});
+})
+
 // Basic Login/Logout/Protected assets
 app.post('/login', function (req, res) {
 	dbConnect().then((db) => {
-		db.collection('user').findOne({ username: req.body.username, password: req.body.password }, function (err, user) {
+		db.collection('user').findOne({email: req.body.email, password: req.body.password}, function (err, user) {
 			if (user) {
 				cl('Login Succesful');
 				delete user.password;
