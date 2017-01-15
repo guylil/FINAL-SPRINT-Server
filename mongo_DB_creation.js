@@ -1,59 +1,68 @@
 const mongodb = require('mongodb');
 const dbName = 'test'
 var url = `mongodb://localhost:27017/${dbName}`;
+
 console.info('Attampting to create Dummy DB')
 
 mongodb.MongoClient.connect(url, function (err, db) {
     if (err) {
-        cl('Cannot connect to DB', err)
-        reject(err);
+        console.log('Cannot connect to DB', err)
     }
     else {
-        cl("Connected to DB");
-        resolve(db);
+        console.log("Connected to DB");
+        insertData();
     }
 });
 
-const collection = db.collection(dbName);
+function insertData() {
+    const collection = mongodb.MongoClient.collection(dbName);
+    collection.insertMany([
+        { a: 1 }, { a: 2 }, { a: 3 },
+    ])
+    console.log('inserted')
+
+};
+
+
 // var doc1 = {'hello':'doc1'};
 // var doc2 = {'hello':'doc2'};
-var lotsOfDocs = [{'hello':'doc3'}, {'hello':'doc4'}];
+// var lotsOfDocs = [{ 'hello': 'doc3' }, { 'hello': 'doc4' }];
 
 
-db.runCommand(
-    {
-        insert: "meal",
-        foods: [],
-        time: "timestamp",
-        userId: "userId"
-         {  user: "ijk123", status: "A" },
-    { user: "xyz123", status: "P" },
-    { user: "mop123", status: "P" }
-      ],
-    ordered: false,
-    writeConcern: { w: "majority", wtimeout: 5000 }
-},
-    {
-        insert: "meal",
-        foods: [
-            { user: "ijk123", status: "A" },
-            { user: "xyz123", status: "P" },
-            { user: "mop123", status: "P" }
-        ],
-        ordered: false,
-        writeConcern: { w: "majority", wtimeout: 5000 }
-    },
-    {
-        insert: "meal",
-        foods: [
-            { user: "ijk123", status: "A" },
-            { user: "xyz123", status: "P" },
-            { user: "mop123", status: "P" }
-        ],
-        ordered: false,
-        writeConcern: { w: "majority", wtimeout: 5000 }
-    },
-)
+// db.runCommand(
+//     {
+//         insert: "meal",
+//         foods: [],
+//         time: "timestamp",
+//         userId: "userId"[
+//         { user: "ijk123", status: "A" },
+//         { user: "xyz123", status: "P" },
+//         { user: "mop123", status: "P" }
+//         ],
+//         ordered: false,
+//         writeConcern: { w: "majority", wtimeout: 5000 }
+//     },
+//     {
+//         insert: "meal",
+//         foods: [
+//             { user: "ijk123", status: "A" },
+//             { user: "xyz123", status: "P" },
+//             { user: "mop123", status: "P" }
+//         ],
+//         ordered: false,
+//         writeConcern: { w: "majority", wtimeout: 5000 }
+//     },
+//     {
+//         insert: "meal",
+//         foods: [
+//             { user: "ijk123", status: "A" },
+//             { user: "xyz123", status: "P" },
+//             { user: "mop123", status: "P" }
+//         ],
+//         ordered: false,
+//         writeConcern: { w: "majority", wtimeout: 5000 }
+//     },
+// )
 
 
 
