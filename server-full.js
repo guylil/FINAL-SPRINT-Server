@@ -55,7 +55,7 @@ function dbConnect() {
 
 	return new Promise((resolve, reject) => {
 		// Connection URL
-		const dbName = 'test'
+		const dbName = 'FoodTrack'
 		var url = `mongodb://localhost:27017/${dbName}`;
 		// Use connect method to connect to the Server
 		mongodb.MongoClient.connect(url, function (err, db) {
