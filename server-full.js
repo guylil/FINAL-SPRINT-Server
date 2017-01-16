@@ -227,6 +227,7 @@ app.post('/usermeals',function(req, res){
 // Basic Login/Logout/Protected assets
 app.post('/login', function (req, res) {
 	dbConnect().then((db) => {
+		console.log(req.body)
 		db.collection('user').findOne({email: req.body.email, password: req.body.password}, function (err, user) {
 			if (user) {
 				cl('Login Succesful');
