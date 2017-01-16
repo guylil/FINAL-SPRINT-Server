@@ -33,7 +33,7 @@ var corsOptions = {
   credentials: true
 };
 
-const serverRoot = 'http://localhost:3003/';
+const serverRoot = 'http://localhost:3004/';
 const baseUrl = serverRoot + 'data';
 
 
@@ -183,6 +183,10 @@ app.put('/data/:objType/:id',  function (req, res) {
 	const objId 	= req.params.id;
 	const newObj 	= req.body;
     if (newObj._id && typeof newObj._id === 'string') newObj._id = new mongodb.ObjectID(newObj._id);
+	
+	console.log("objType", objType);
+	console.log("objId", objId);
+	console.log("newObj", newObj);
 
     cl(`Requested to UPDATE the ${objType} with id: ${objId}`);
 	dbConnect().then((db) => {
@@ -259,7 +263,7 @@ app.get('/protected', requireLogin, function (req, res) {
 // Kickup our server 
 // Note: app.listen will not work with cors and the socket
 // app.listen(3003, function () {
-http.listen(3003, function () {
+http.listen(3004, function () {
 	console.log(`REST server is ready at ${baseUrl}`);
 	console.log(`GET (list): \t\t ${baseUrl}/{entity}`);
 	console.log(`GET (single): \t\t ${baseUrl}/{entity}/{id}`);
