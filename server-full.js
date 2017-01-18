@@ -160,7 +160,7 @@ app.post('/data/:objType', upload.single('file'), function (req, res) {
 
 	dbConnect().then((db) => {
 		const collection = db.collection(objType);
-		if(objType === 'meal'){
+		if(objType === 'meal' || objType === 'feeling'){
 			obj.userId = new mongodb.ObjectID(obj.userId);
 		}
 		collection.insert(obj, (err, result) => {
@@ -223,6 +223,21 @@ app.post('/usermeals',function(req, res){
 		})
 	});
 })
+
+// app.post('userfeelings' , function (req , res){
+// 	const id = new mongodb.ObjectID(req.body.userId);
+// 	dbConnect().then( (db) => {
+// 		db.collection('feeling').find({userId: id}).toArray(function (err , feelings){
+// 			if(feelings){
+// 				feelings = feelings.filter( feeling => {
+// 					if(feeling )
+// 				});
+// 			} else {
+
+// 			}
+// 		});
+// 	})
+// });
 
 // Basic Login/Logout/Protected assets
 app.post('/login', function (req, res) {
