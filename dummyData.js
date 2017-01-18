@@ -17,7 +17,7 @@ function insertDocuments(numOfDummyEntries, db, callback) {
     };
     for (var i = 0; i < numOfDummyEntries; i++) {
         db.collection('user').insertMany([
-            { email: 'aa@gmail.com', password: '123', imageUrl: 'www', settings: { pushTImer: 1000, lnag: 'en' } },
+            { email: 'aa@gmail.com', password: '123', imageUrl: 'www', settings: { pushTimer: 1000, lang: 'en' } },
         ]);
     };
 };
