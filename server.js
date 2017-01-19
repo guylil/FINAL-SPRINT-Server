@@ -15,24 +15,3 @@ console.info('FINAL-SPRINT by Saar Sabin, Guy Lilian and Shahar Haramati C.');
 console.info('Notice: Only Mongo based server also has websocket support');
 console.info('***** REDIRECING TO  MongoDB server');
 require('./server-full');
-
-// var schema = {
-// 	properties: {
-// 		engine: {
-// 			pattern: /m|f/,
-// 			description: 'Which storage should I use mongodb (m) or file system (f)?',
-// 			message: 'Must select an engine!',
-// 			required: true
-// 		}
-// 	}
-// };
-// prompt.start();
-// prompt.get(schema, function (err, result) {
-// 	switch (result.engine) {
-// 		case "m":
-// 			require('./server-full');
-// 			break;
-// 		case "f":
-// 			require('./server-load-from-files');
-// 	}
-// });

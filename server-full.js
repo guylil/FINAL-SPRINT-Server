@@ -28,13 +28,20 @@ var upload = multer({ storage: storage })
 
 const app = express();
 
+app.use('/', express.static(__dirname));
+
+let port = process.env.PORT || 5000;
+
+app.listen(port, function () {
+  console.log('server started ' + port);
+});
+
 var corsOptions = {
 	origin: /http:\/\/localhost:\d+/,
 	credentials: true
 };
 
-const serverRoot = 'http://localhost:3004/';
-const baseUrl = serverRoot + 'data';
+
 
 
 app.use(express.static('uploads'));
@@ -55,8 +62,9 @@ function dbConnect() {
 
 	return new Promise((resolve, reject) => {
 		// Connection URL
-		const dbName = 'FoodTrack'
-		var url = `mongodb://localhost:27017/${dbName}`;
+		// const dbName = 'FoodTrack'
+		var url = `mongodb://ssabin:gss1234@ds117189.mlab.com:17189/foodtrack`
+		// var url = `mongodb://localhost:27017/${dbName}`;
 		// Use connect method to connect to the Server
 		mongodb.MongoClient.connect(url, function (err, db) {
 			if (err) {
@@ -154,15 +162,15 @@ app.post('/data/:objType', upload.single('file'), function (req, res) {
 	const obj = req.body;
 	delete obj._id;
 	// If there is a file upload, add the url to the obj
-	if (req.file) {
-		obj.imgUrl = serverRoot + req.file.filename;
-	}
+	// if (req.file) {
+	// 	obj.imgUrl = serverRoot + req.file.filename;
+	// }
 
 	dbConnect().then((db) => {
 		const collection = db.collection(objType);
-		if(objType === 'meal' || objType === 'feeling'){
-			obj.userId = new mongodb.ObjectID(obj.userId);
-		}
+		// if(objType === 'meal' || objType === 'feeling'){
+		// 	obj.userId = new mongodb.ObjectID(obj.userId);
+		// }
 		collection.insert(obj, (err, result) => {
 			if (err) {
 				cl(`Couldnt insert a new ${objType}`, err)
@@ -205,9 +213,9 @@ app.put('/data/:objType/:id',  function (req, res) {
 });
 
 app.post('/usermeals',function(req, res){
-	const id = new mongodb.ObjectID(req.body.userId);
+	// const id = new mongodb.ObjectID(req.body.userId);
 	dbConnect().then( (db) => {
-		db.collection('meal').find({userId : id}).toArray(function(err , meals){
+		db.collection('meal').find({userId : req.body.userId}).toArray(function(err , meals){
 			if(meals){
 				meals = meals.filter(meal => {
 					if(meal.time >= req.body.from && meal.time <= req.body.to) return meal;
@@ -244,6 +252,7 @@ app.post('/login', function (req, res) {
 	dbConnect().then((db) => {
 		console.log(req.body)
 		db.collection('user').findOne({email: req.body.email, password: req.body.password}, function (err, user) {
+			console.log(user)
 			if (user) {
 				cl('Login Succesful');
 				delete user.password;
@@ -280,12 +289,12 @@ app.get('/protected', requireLogin, function (req, res) {
 // Note: app.listen will not work with cors and the socket
 // app.listen(3003, function () {
 http.listen(3004, function () {
-	console.log(`REST server is ready at ${baseUrl}`);
-	console.log(`GET (list): \t\t ${baseUrl}/{entity}`);
-	console.log(`GET (single): \t\t ${baseUrl}/{entity}/{id}`);
-	console.log(`DELETE: \t\t ${baseUrl}/{entity}/{id}`);
-	console.log(`PUT (update): \t\t ${baseUrl}/{entity}/{id}`);
-	console.log(`POST (add): \t\t ${baseUrl}/{entity}`);
+	// console.log(`REST server is ready at ${baseUrl}`);
+	// console.log(`GET (list): \t\t ${baseUrl}/{entity}`);
+	// console.log(`GET (single): \t\t ${baseUrl}/{entity}/{id}`);
+	// console.log(`DELETE: \t\t ${baseUrl}/{entity}/{id}`);
+	// console.log(`PUT (update): \t\t ${baseUrl}/{entity}/{id}`);
+	// console.log(`POST (add): \t\t ${baseUrl}/{entity}`);
 
 });
 
@@ -308,9 +317,4 @@ function cl(...params) {
 	console.log.apply(console, params);
 }
 
-// Just for basic testing the socket
-app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/test-socket.html');
-});
-
-require('./dummyData');
+app.use('/*', express.static(__dirname));
